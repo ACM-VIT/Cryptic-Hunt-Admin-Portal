@@ -11,11 +11,11 @@ export default function PageVisitsCard() {
     const [requests, setRequests] = useState([]);
 
     useEffect(() => {
-        fetch(`${BACKEND_API_URL}/admin/leaderboard`, defaultOptions
+        fetch(`${BACKEND_API_URL}/teams/leaderboard`, defaultOptions
         )
             .then((response) => response.json())
             .then((data) => {
-                console.log(data)
+                console.log("from kjdshfudsh" + data)
                 setRequests(data.leaderboard);
             })
     }, []);
