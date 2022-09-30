@@ -3,13 +3,34 @@ import CardHeader from '@material-tailwind/react/CardHeader';
 import CardBody from '@material-tailwind/react/CardBody';
 import Button from '@material-tailwind/react/Button';
 import Progress from '@material-tailwind/react/Progress';
+import { BACKEND_API_URL, defaultOptions } from 'pages/config'
+import { useState, useEffect } from 'react';
+import { isTemplateSpan } from 'typescript';
 
 export default function TrafficCard() {
+    // get requests from url
+    const [requests, setRequests] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        fetch(`${BACKEND_API_URL}/admin/submissions/analysis`, defaultOptions
+        )
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data)
+                setRequests(data);
+                setLoading(false);
+            })
+    }, []);
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error.message}</div>;
     return (
         <Card>
             <CardHeader color="purple" contentPosition="none">
                 <div className="w-full flex items-center justify-between">
-                    <h2 className="text-white text-2xl">Social Media</h2>
+                    <h2 className="text-white text-2xl">Highest Questions Submissions</h2>
                     <Button
                         color="transparent"
                         buttonType="link"
@@ -26,59 +47,34 @@ export default function TrafficCard() {
                         <thead className="thead-light">
                             <tr>
                                 <th className="px-2 text-purple-500 align-middle border-b border-solid border-gray-200 py-3 text-sm whitespace-nowrap font-light text-left">
-                                    Referral
+                                    Question Group
                                 </th>
                                 <th className="px-2 text-purple-500 align-middle border-b border-solid border-gray-200 py-3 text-sm whitespace-nowrap font-light text-left">
-                                    Visitors
+                                    Submissions
                                 </th>
                                 <th className="px-2 text-purple-500 align-middle border-b border-solid border-gray-200 py-3 text-sm whitespace-nowrap font-light text-left w-56"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <th className="border-b border-gray-200 align-middle font-light text-sm whitespace-nowrap px-2 py-4 text-left">
-                                    Facebook
-                                </th>
-                                <td className="border-b border-gray-200 align-middle font-light text-sm whitespace-nowrap px-2 py-4 text-left">
-                                    1,480
-                                </td>
-                                <td className="border-b border-gray-200 align-middle font-light text-sm whitespace-nowrap px-2 py-4 text-left">
-                                    <Progress color="blue" value="60" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <th className="border-b border-gray-200 align-middle font-light text-sm whitespace-nowrap px-2 py-4 text-left">
-                                    Google
-                                </th>
-                                <td className="border-b border-gray-200 align-middle font-light text-sm whitespace-nowrap px-2 py-4 text-left">
-                                    4,807
-                                </td>
-                                <td className="border-b border-gray-200 align-middle font-light text-sm whitespace-nowrap px-2 py-4 text-left">
-                                    <Progress color="red" value="80" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <th className="border-b border-gray-200 align-middle font-light text-sm whitespace-nowrap px-2 py-4 text-left">
-                                    Instagram
-                                </th>
-                                <td className="border-b border-gray-200 align-middle font-light text-sm whitespace-nowrap px-2 py-4 text-left">
-                                    3,678
-                                </td>
-                                <td className="border-b border-gray-200 align-middle font-light text-sm whitespace-nowrap px-2 py-4 text-left">
-                                    <Progress color="indigo" value="75" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <th className="border-b border-gray-200 align-middle font-light text-sm whitespace-nowrap px-2 py-4 text-left">
-                                    Twitter
-                                </th>
-                                <td className="border-b border-gray-200 align-middle font-light text-sm whitespace-nowrap px-2 py-4 text-left">
-                                    2,645
-                                </td>
-                                <td className="border-b border-gray-200 align-middle font-light text-sm whitespace-nowrap px-2 py-4 text-left">
-                                    <Progress color="lightBlue" value="90" />
-                                </td>
-                            </tr>
+                            {requests.map((item, index) => (
+                                <tr key={index}>
+                                    <th className="border-b border-gray-200 align-middle font-light text-sm whitespace-nowrap px-2 py-4 text-left">
+                                        {item.name}
+                                    </th>
+                                    <td className="border-b border-gray-200 align-middle font-light text-sm whitespace-nowrap px-2 py-4 text-left">
+                                        {item.submissions}
+                                    </td>
+                                    <td className="border-b border-gray-200 align-middle font-light text-sm whitespace-nowrap px-2 py-4 text-left">
+                                        <Progress color="blue" value={item.percentageCorrect} />
+                                    </td>
+                                </tr>
+                            ))}
+                            {/* {`hello`}
+                            <pre>
+                                <code>
+                                    {JSON.stringify(requests, null, 2)}
+                                </code>
+                            </pre> */}
                         </tbody>
                     </table>
                 </div>

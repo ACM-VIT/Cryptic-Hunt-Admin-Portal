@@ -23,16 +23,8 @@ export default function StatusCard({
                         <Icon name={icon} size="3xl" color="white" />
                     </CardHeader>
 
-                    <CardStatus title={title} amount={amount} />
+                    <CardStatus title={title} amount={amount.toLocaleString()} />
                 </CardRow>
-
-                <CardStatusFooter
-                    amount={percentage}
-                    color={percentageColor}
-                    date={date}
-                >
-                    <Icon color={percentageColor} name={percentageIcon} />
-                </CardStatusFooter>
             </Card>
         </div>
     );
